@@ -9,7 +9,7 @@ public class BlockOfClasses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int classID;
-    @Column(name = "className", unique = true)
+    @Column(unique = true)
     private String className;
 
 

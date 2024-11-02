@@ -2,40 +2,55 @@ package com.project.finalproject.service;
 
 
 import com.project.finalproject.entities.AppUser;
+import com.project.finalproject.entities.Role;
 import com.project.finalproject.models.AppUserModel;
+import com.project.finalproject.models.RoleModel;
 import com.project.finalproject.repository.AppUserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class AppUserService {
+public class AppUserService implements IAppUserService {
 
 
     private final AppUserRepository appUserRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public AppUserService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public AppUserService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public AppUserModel saveUser(AppUserModel useri) {
 
-        useri.setPassword(passwordEncoder.encode(useri.getPassword()));
 
         return convertToModel(appUserRepository.save(convertToEntity(useri)));
     }
 
-    public AppUserModel convertToModel(AppUser appUser) {
+    @Override
+    public List<AppUserModel> getAllUsers() {
+        return List.of();
+    }
+
+    @Override
+    public AppUserModel getUserById(Long id) {
+        return null;
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+
+    }
+
+    private AppUserModel convertToModel(AppUser appUser) {
         AppUserModel appUserModel = new AppUserModel();
-        appUserModel.setUserName(appUser.getUsername());
+        appUserModel.setUsername(appUser.getUsername());
         appUserModel.setPassword(appUser.getPassword());
-        appUserModel.setRole(appUser.getRoles().stream().map(entity -> {
-            return RoleService.convertToModel(entity);
-        }).collect(Collectors.toSet()));
+        appUserModel.setGenerality(appUser.getGenerality());
+        appUserModel.setRolet(appUser.getRoles().stream().map(RoleService::convertToModel).collect(Collectors.toSet()));
 
 /*
 Set <Roli> set = new Hashset<>();
@@ -51,9 +66,14 @@ Set <Roli> set = new Hashset<>();
 
     public AppUser convertToEntity(AppUserModel appUserModel) {
         AppUser appUser = new AppUser();
-        appUser.setUsername(appUserModel.getUserName());
+        appUser.setUsername(appUserModel.getUsername());
         appUser.setPassword(appUserModel.getPassword());
-        appUser.setRoles(appUserModel.getRolet().stream().map(RoleService::convertToEntity).collect(Collectors.toSet()));
+        appUser.setGenerality(appUserModel.getGenerality());
+        appUser.setUserEnabled(true);
+        appUser.setRoles(Set.of(
+                new Role("USER")
+        ));
+        //appUser.setRoles(appUserModel.getRolet().stream().map(RoleService::convertToEntity).collect(Collectors.toSet()));
         return appUser;
     }
 }
