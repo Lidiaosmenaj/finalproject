@@ -25,25 +25,9 @@ public class AppUserService implements IAppUserService {
 
     @Override
     public AppUserModel saveUser(AppUserModel useri) {
-
-
         return convertToModel(appUserRepository.save(convertToEntity(useri)));
     }
 
-    @Override
-    public List<AppUserModel> getAllUsers() {
-        return List.of();
-    }
-
-    @Override
-    public AppUserModel getUserById(Long id) {
-        return null;
-    }
-
-    @Override
-    public void deleteUserById(Long id) {
-
-    }
 
     private AppUserModel convertToModel(AppUser appUser) {
         AppUserModel appUserModel = new AppUserModel();
